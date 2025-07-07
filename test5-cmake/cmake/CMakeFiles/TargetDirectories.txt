@@ -1,0 +1,5 @@
+/Users/sdkteam/Documents/test-projects/test/test5-cmake/cmake/CMakeFiles/rebuild_cache.dir
+/Users/sdkteam/Documents/test-projects/test/test5-cmake/cmake/CMakeFiles/edit_cache.dir
+/Users/sdkteam/Documents/test-projects/test/test5-cmake/cmake/CMakeFiles/test5.dir
+/Users/sdkteam/Documents/test-projects/test/test5-cmake/cmake/test5-subcmake/CMakeFiles/rebuild_cache.dir
+/Users/sdkteam/Documents/test-projects/test/test5-cmake/cmake/test5-subcmake/CMakeFiles/edit_cache.dir

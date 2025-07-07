@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/sdkteam/Documents/test-projects/test/test3-share_ptr/test3-classA.h
+stdio.h
+-
+
+/Users/sdkteam/Documents/test-projects/test/test3-share_ptr/test3-main.cpp
+test3-share_ptr.h
+/Users/sdkteam/Documents/test-projects/test/test3-share_ptr/test3-share_ptr.h
+memory
+-
+
+/Users/sdkteam/Documents/test-projects/test/test3-share_ptr/test3-share_ptr.cpp
+test3-share_ptr.h
+/Users/sdkteam/Documents/test-projects/test/test3-share_ptr/test3-share_ptr.h
+test3-classA.h
+/Users/sdkteam/Documents/test-projects/test/test3-share_ptr/test3-classA.h
+
+/Users/sdkteam/Documents/test-projects/test/test3-share_ptr/test3-share_ptr.h
+stdio.h
+-
+memory
+-
+

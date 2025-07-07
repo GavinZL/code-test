@@ -1,0 +1,52 @@
+cmake_minimum_required(VERSION 3.4.1)
+set(PROJECT_NAME task_dispatcher)
+project(${PROJECT_NAME})
+
+set(CMAKE_CXX_STANDARD 17)
+
+#-fPIC 针对动态库生成位置无关代码
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -Wall -fexceptions")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -Wall -fexceptions")
+
+set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_DIR}/test)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_DIR}/test)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_DIR}/test)
+
+include_directories(${PROJECT_DIR})
+include_directories(${PROJECT_DIR}/JobDepend)
+
+file(GLOB ALL_SRC 
+    ${PROJECT_DIR}/*.cpp
+    ${PROJECT_DIR}/JobDepend/*.cpp)
+
+
+
+IF (CMAKE_SYSTEM_NAME MATCHES "Android")
+    add_library(${PROJECT_NAME} SHARED ${ALL_SRC})
+ELSEIF (CMAKE_SYSTEM_NAME MATCHES "iOS")
+	add_library(${PROJECT_NAME} STATIC ${ALL_SRC})
+    source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${ALL_SRC})
+ELSE()
+    message("else")
+    add_library(${PROJECT_NAME} SHARED ${ALL_SRC})
+ENDIF()
+
+# set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
+
+# SET(INSTALL_FILES 
+#     ${PROJECT_DIR}/capture/HECameraSystem.h
+#     ${PROJECT_DIR}/capture/HECameraSource.h
+#     ${PROJECT_DIR}/capture/HEFrame.h
+#     ${PROJECT_DIR}/capture/HECameraParam.h
+#     ${PROJECT_DIR}/capture/HECaptureStatusCallback.h
+#     ${PROJECT_DIR}/capture/HECaptureOutputCallback.h
+#     ${PROJECT_DIR}/convert/HEDataConvertor.h
+#     ${PROJECT_DIR}/convert/HEDataConvertorDefine.h
+#     ${PROJECT_DIR}/common/HEOrientationConverter.h
+#     )
+
+# install(FILES
+#     ${INSTALL_CAPTURE_FILES}
+#     DESTINATION ${PROJECT_DIR}/../publish/${CMAKE_BUILD_TYPE}/include/capture)

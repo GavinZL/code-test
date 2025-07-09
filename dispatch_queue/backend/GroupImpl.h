@@ -14,7 +14,7 @@ namespace queue
         : mThreadPool(pool) 
         , mConsumable(std::make_shared<Consumable>(0))
         {};
-        ~GroupImpl() = default;
+        ~GroupImpl();
 
         // 在指定队列抛一个任务
         void async(const TaskOperatorPtr& task, const TaskQueuePtr& queue);

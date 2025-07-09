@@ -1,6 +1,7 @@
 #include "ParallelQueueImpl.h"
 #include "TaskOperatorBackend.h"
 #include <cassert>
+#include <cstdio>
 namespace queue 
 {
 
@@ -8,10 +9,12 @@ namespace queue
     : IQueueImpl(TaskQueueType::TQT_Parallel, threadPool)
     , mPriority(prio)
     {
+        printf("ParallelQueueImpl() %d\n", prio);
     }
 
     ParallelQueueImpl::~ParallelQueueImpl()
     {
+        printf("~ParallelQueueImpl() %d\n", mPriority);
     }
 
     void ParallelQueueImpl::async(const TaskOperatorPtr& task)

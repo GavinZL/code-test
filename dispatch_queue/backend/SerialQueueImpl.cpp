@@ -3,6 +3,7 @@
 #include "LWBarrier.h"
 #include "TaskOperatorBackend.h"
 #include <cassert>
+#include <cstdio>
 #include <memory>
 namespace queue 
 {
@@ -21,6 +22,7 @@ namespace queue
 
     SerialQueueImpl::~SerialQueueImpl()
     {
+        printf("SerialQueueImpl::~SerialQueueImpl, mIsExclusive: %d, mThreadId: %d\n", mIsExclusive, mThreadId);
         if(mIsExclusive && mThreadId >= 0)
         {
             _threadPool()->detachOneThread(mThreadId);
@@ -29,6 +31,7 @@ namespace queue
 
     void SerialQueueImpl::async(const TaskOperatorPtr& task)
     {
+        printf("SerialQueueImpl::%s, mIsExclusive: %d, mThreadId: %d\n", __func__, mIsExclusive, mThreadId);
         assert(_threadPool());
         if(mIsExclusive)
         {

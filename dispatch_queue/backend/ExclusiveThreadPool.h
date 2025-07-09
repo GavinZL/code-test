@@ -9,7 +9,6 @@
 #include "3rdparty/ThreadRWLock.hpp"
 namespace queue 
 {
-
     class ExclusiveThreadPool : public IThreadPool
     {
     public:

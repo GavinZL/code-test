@@ -8,6 +8,7 @@
 #include <array>
 #include <cassert>
 #include <cstdint>
+#include <cstdio>
 #include <memory>
 namespace queue
 {
@@ -32,6 +33,7 @@ namespace queue
     // 创建串行队列
     TaskQueuePtr TaskQueueFactoryImpl::createSerialQueue(const std::string& label, WorkThreadPriority priority, bool isExclusive)
     {
+        printf("TaskQueueFactoryImpl::%s, label: %s, priority: %d, isExclusive: %d\n", __func__, label.c_str(), priority, isExclusive);
         auto threadPool = isExclusive ? IThreadPool::exculsiveThreadPool() : IThreadPool::globalThreadPool();
         auto backendQueue = std::make_shared<SerialQueueImpl>(label, isExclusive, threadPool, priority);
         return std::make_shared<TaskQueue>(label, backendQueue);

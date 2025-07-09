@@ -5,7 +5,7 @@
 #include <mutex>
 namespace queue 
 {
-    const std::shared_ptr<class TaskQueueFactoryImpl>& TaskQueueFactory::_getFactoryImpl()
+    const std::shared_ptr<TaskQueueFactoryImpl>& TaskQueueFactory::_getFactoryImpl()
     {
         static std::once_flag sFlag;
         std::call_once(sFlag, [this]() {

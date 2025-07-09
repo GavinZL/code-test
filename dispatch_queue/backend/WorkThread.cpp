@@ -1,7 +1,9 @@
 #include "WorkThread.h"
 #include <atomic>
 #include <chrono>
+#include <cstdio>
 #include <memory>
+#include <thread>
 namespace queue
 {
     // 自旋尝试获取信号量的次数
@@ -12,10 +14,13 @@ namespace queue
     WorkThread::WorkThread(const std::weak_ptr<IThreadPool>& threadPool)
     : mThreadPool(threadPool)
     , mThread(&WorkThread::run, this)
-    {}
+    {
+        printf("WorkThread::WorkThread, threadId: %d\n", std::this_thread::get_id());
+    }
     
     WorkThread::~WorkThread()
     {
+        printf("WorkThread::~WorkThread, threadId: %d\n", std::this_thread::get_id());
         if(mThread.joinable())
         {
             mThread.join();
@@ -24,6 +29,7 @@ namespace queue
 
     void WorkThread::run()
     {
+        printf("WorkThread::run, threadId: %d, name: %s\n", std::this_thread::get_id(), mName.c_str());
         while (!mIsCancelled.load(std::memory_order_acquire))
         {
             if(mNameChanged)
@@ -60,6 +66,8 @@ namespace queue
         {
             pool->unregisterWorkThread(shared_from_this());
         }
+
+        printf("WorkThread::run, threadId: %d, exit, name: %s\n", std::this_thread::get_id(), mName.c_str());
     }
 
     void WorkThread::cancel()
@@ -116,6 +124,7 @@ namespace queue
         // 执行任务
         if(mOps.try_dequeue(op) && op)
         {
+            printf("WorkThread::_exclusive, threadId: %d\n", std::this_thread::get_id());
             (*op)();
         }
 
@@ -170,6 +179,7 @@ namespace queue
 
         if(op)
         {
+            printf("WorkThread::_parallel, threadId: %d\n", std::this_thread::get_id());
             (*op)();
         }
 

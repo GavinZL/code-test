@@ -1,6 +1,7 @@
 #include "ExclusiveThreadPool.h"
 #include "WorkThread.h"
 #include "SysUtils.h"
+#include <cstdio>
 namespace queue 
 {
     void ExclusiveThreadPool::registerWorkThread(const std::shared_ptr<WorkThread>& thread)
@@ -17,6 +18,7 @@ namespace queue
 
     int32_t ExclusiveThreadPool::attachOneThread(const std::string& name, WorkThreadPriority prio)
     {
+        printf("ExclusiveThreadPool::attachOneThread, name: %s, prio: %d\n", name.c_str(), prio);
         int32_t index = -1;
         {
             task::ReadLock lock(mExclusiveThreadsLock);
@@ -57,6 +59,7 @@ namespace queue
 
     void ExclusiveThreadPool::detachOneThread(int32_t threadID)
     {
+        printf("ExclusiveThreadPool::detachOneThread, threadID: %d\n", threadID);
         task::WriteLock lock(mExclusiveThreadsLock);
         auto it = mExclusiveThreads.find(threadID);
         if(it != mExclusiveThreads.end())
@@ -67,6 +70,7 @@ namespace queue
 
     void ExclusiveThreadPool::execute(const TaskOperatorPtr& task, int32_t threadId)
     {
+        printf("ExclusiveThreadPool::execute, threadId: %d\n", threadId);
         task::ReadLock lock(mExclusiveThreadsLock);
         auto it = mExclusiveThreads.find(threadId);
         if(it != mExclusiveThreads.end())

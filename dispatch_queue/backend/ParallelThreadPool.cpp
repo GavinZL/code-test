@@ -4,6 +4,7 @@
 #include <atomic>
 #include <cassert>
 #include <cstdint>
+#include <cstdio>
 #include <memory>
 #include <mutex>
 #include "SysUtils.h"
@@ -13,6 +14,7 @@ namespace queue
 
     ParallelThreadPool::ParallelThreadPool()
     {
+        printf("ParallelThreadPool()\n");
         // 线程池最大线程数为cpu核数
         mData = std::make_shared<Data>();
         mData->mMaxThreads.store(SysUtils::cpuCount(), std::memory_order_release);
@@ -20,6 +22,7 @@ namespace queue
 
     ParallelThreadPool::~ParallelThreadPool()
     {
+        printf("~ParallelThreadPool()\n");
         // 通知所有线程退出
         mData->mSemaphore.release(mData->mMaxThreads.load(std::memory_order_acquire));
     }
@@ -32,6 +35,7 @@ namespace queue
 
     void ParallelThreadPool::unregisterWorkThread(const std::shared_ptr<WorkThread>& thread)
     {
+        printf("unregisterWorkThread()\n");
         std::lock_guard<std::mutex> lock(mParallelMutex);
         mParallelThreads.erase(thread->threadId());
     }

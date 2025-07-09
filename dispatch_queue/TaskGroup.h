@@ -7,12 +7,17 @@
 #include <chrono>
 #include <cstddef>
 #include <memory>
+#include <type_traits>
+#include "TaskOperator.h"
 #include "TaskQueueDefine.h"
 namespace queue 
 {
     class GroupImpl;
     class TaskGroup
     {
+        public:
+            using Func = std::function<void()>;
+
         public:
             TaskGroup(const std::shared_ptr<GroupImpl>& groupImpl)
             : mGroupImpl(groupImpl)
@@ -21,19 +26,34 @@ namespace queue
             ~TaskGroup() = default;
 
             // 在指定队列抛一个任务
-            void async(const TaskOperatorPtr& task, const TaskQueuePtr& queue = nullptr);
-            template<typename Func>
-            void async(const Func& f, const TaskQueuePtr& queue = nullptr);
+            void asyncQueue(const TaskOperatorPtr& task, const TaskQueuePtr& queue = nullptr);
+            void asyncQueue(Func&& f, const TaskQueuePtr& queue = nullptr)
+            {
+                auto task = std::make_shared<TaskOperator>([f](const TaskOperatorPtr&){
+                    f();
+                });
+                asyncQueue(task, queue);
+            }
 
             // 在全局队列抛一个任务
             void async(const TaskOperatorPtr& task, TaskQueuePriority priority = TaskQueuePriority::TQP_Normal);
-            template<typename Func>
-            void async(const Func& f, TaskQueuePriority priority = TaskQueuePriority::TQP_Normal);
+            void async(Func&& f, TaskQueuePriority priority = TaskQueuePriority::TQP_Normal)
+            {
+                auto task = std::make_shared<TaskOperator>([f](const TaskOperatorPtr&){
+                    f();
+                });
+                async(task, priority);
+            }
 
             // group所有执行完后，在指定queue上异步通知
             void notify(const TaskOperatorPtr& task, const TaskQueuePtr& queue = nullptr);
-            template<typename Func>
-            void notify(const Func& f, const TaskQueuePtr& queue = nullptr);
+            void notify(Func&& f, const TaskQueuePtr& queue = nullptr)
+            {
+                auto task = std::make_shared<TaskOperator>([f](const TaskOperatorPtr&){
+                    f();
+                });
+                notify(task, queue);
+            }
 
             // group 等待所有任务结束
             bool wait(std::chrono::milliseconds t = std::chrono::milliseconds(-1));
@@ -41,36 +61,6 @@ namespace queue
         private:
             std::shared_ptr<GroupImpl> mGroupImpl;
     } ;
-
-
-
-    template<typename Func>
-    void TaskGroup::async(const Func& f, const TaskQueuePtr& queue)
-    {
-        auto task = std::shared_ptr<TaskOperator>([f](const TaskOperatorPtr& task) {
-            f();
-        });
-        async(task, queue);
-    }
-
-
-    template<typename Func>
-    void TaskGroup::async(const Func& f, TaskQueuePriority priority)
-    {
-        auto task = std::shared_ptr<TaskOperator>([f](const TaskOperatorPtr& task) {
-            f();
-        });
-        async(task, priority);
-    }
-
-    template<typename Func>
-    void TaskGroup::notify(const Func& f, const TaskQueuePtr& queue)
-    {
-        auto task = std::shared_ptr<TaskOperator>([f](const TaskOperatorPtr& task) {
-            f();
-        });
-        notify(task, queue);
-    }
 
 }
 

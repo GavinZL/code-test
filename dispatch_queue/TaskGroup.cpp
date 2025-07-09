@@ -5,8 +5,7 @@
 #include "TaskQueue.h"
 namespace queue 
 {
-
-    void TaskGroup::async(const TaskOperatorPtr& task, const TaskQueuePtr& queue)
+    void TaskGroup::asyncQueue(const TaskOperatorPtr& task, const TaskQueuePtr& queue)
     {
         auto q = queue;
         if(q == nullptr)

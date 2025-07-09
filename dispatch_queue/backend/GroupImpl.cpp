@@ -9,6 +9,10 @@
 
 namespace queue 
 {
+    GroupImpl::~GroupImpl()
+    {
+        printf("~GroupImpl()\n");
+    }
     // 在指定队列抛一个任务
     void GroupImpl::async(const TaskOperatorPtr& task, const TaskQueuePtr& queue)
     {
@@ -33,7 +37,7 @@ namespace queue
     {
         // 在指定的queue上 抛一个等待任务
         const auto self = shared_from_this();
-        queue->async([task, self, queue]{
+        queue->async( [task, self, queue]{
             self->wait();           //group 等待所有执行完成
             queue->async(task);     //通知回调
         });

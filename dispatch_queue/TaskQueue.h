@@ -12,6 +12,8 @@ namespace queue
     class TaskQueue final
     {
     public:
+        using Func = std::function<void()>;
+    public:
         explicit TaskQueue(const std::string& label, const TaskQueueImplPtr& impl);
         ~TaskQueue() = default;
 
@@ -20,54 +22,36 @@ namespace queue
 
         // 异步任务
         void async(const TaskOperatorPtr& task);
-
-        template<typename Func, typename... Args>
-        void async(Func&& func, Args&&... args);
+        // 直接使用std::functiond对象，处理lambda回调(参数由lambda捕获列表进行传递)
+        void async(Func&& func) {
+            auto task = std::make_shared<TaskOperator>([func](const TaskOperatorPtr&) {
+                func();
+            });
+            async(task);
+        }
 
         // 同步任务
         void sync(const TaskOperatorPtr& task);
-
-        template<typename Func, typename... Args>
-        void sync(Func&& func, Args&&... args);
+        void sync(Func&& func) {
+            auto task = std::make_shared<TaskOperator>([func](const TaskOperatorPtr&) {
+                func();
+            });
+            sync(task);
+        }
 
         // 延时任务
         void after(std::chrono::milliseconds delay, const TaskOperatorPtr& task);
-
-        // 延时任务
-        template<typename Func, typename... Args>
-        void after(std::chrono::milliseconds delay, Func&& func, Args&&... args);
+        void after(std::chrono::milliseconds delay, Func&& func) {
+            auto task = std::make_shared<TaskOperator>([func](const TaskOperatorPtr&) {
+                func();
+            });
+            after(delay, task);
+        }
 
         private:
             std::string mLabel;
             std::shared_ptr<class IQueueImpl> mImpl;
     };
-
-    template<typename Func, typename... Args>
-    void TaskQueue::async(Func&& func, Args&&... args)
-    {
-        auto task = std::make_shared<TaskOperator>([func, args...](const TaskOperatorPtr& task) {
-            // func(std::forward<Args>(args)...);
-        });
-        async(task);
-    }
-
-    template<typename Func, typename... Args>
-    void TaskQueue::sync(Func&& func, Args&&... args)
-    {
-        auto task = std::make_shared<TaskOperator>([func, args...](const TaskOperatorPtr& task) {
-            // func(std::forward<Args>(args)...);
-        });
-        sync(task);
-    }
-
-    template<typename Func, typename... Args>
-    void TaskQueue::after(std::chrono::milliseconds delay, Func&& func, Args&&... args)
-    {
-        auto task = std::make_shared<TaskOperator>([func, args...](const TaskOperatorPtr& task) {
-            // func(std::forward<Args>(args)...);
-        });
-        after(delay, task);
-    }
 }
 
 #endif // __TASK_QUEUE_H__

@@ -23,10 +23,10 @@ namespace queue
         // 创建并行队列
         TaskQueuePtr createParallelTaskQueue(const std::string& label, TaskQueuePriority priority);
     
-        // 获取队列 【全局初始化并行队列】
+        // 获取队列 【全局并行队列】
         TaskQueuePtr& globalParallelQueue(TaskQueuePriority priority);
 
-        // 获取串行队列 【全局初始化串行队列， 非独占线程】
+        // 获取串行队列 【全局串行队列， 非独占线程】
         TaskQueuePtr& globalSerialQueue();
 
         // 创建group

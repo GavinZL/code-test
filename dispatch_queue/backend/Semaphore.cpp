@@ -18,7 +18,7 @@ namespace queue
             {
                 return false;
             }
-            // 如果有信号量，无锁获取并减一
+            // 如果有信号量，无锁获取并减一, 尝试直到无信号为止
             if(mCount.compare_exchange_weak(old_cnt, old_cnt - 1, std::memory_order_acq_rel))
             {
                 return true;
@@ -71,20 +71,21 @@ namespace queue
         };
 
         // 1.尝试获取一次
-        if(!tryAcquire())
+        if(tryAcquire())
         {
-            // 2.失败了，加锁再尝试一下，避免加锁前后状态发生变化
-            std::unique_lock<std::mutex> lock(mMutex);
-            if(!tryAcquire())
-            {
-                // 3.还是失败了，条件变量等待
-                WaiterScope scope(mWaiter);
-                return mCondVar.wait_for(lock, timeout, 
-                    [this]() { return tryAcquire(); });
-            }
+            return true;
         }
 
-        return true;
+        // 2.失败了，加锁再尝试一下，避免加锁前后状态发生变化
+        std::unique_lock<std::mutex> lock(mMutex);
+        if(tryAcquire())
+        {
+            return true;
+        }
+
+        // 3.还是失败了，条件变量等待, 等待数量+1
+        WaiterScope scope(mWaiter);
+        return mCondVar.wait_for(lock, timeout, [this]() { return tryAcquire(); });
     }
 
     void Semaphore::release(int count)

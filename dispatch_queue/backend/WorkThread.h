@@ -6,13 +6,12 @@
 #include <atomic>
 #include <cstdint>
 #include <memory>
-#include <simd/packed.h>
 #include <thread>
 #include <mutex>
 #include "QueueDefine.h"
 #include "IThreadPool.h"
 #include "Semaphore.h"
-#include "../TaskQueueDefine.h"
+#include "TaskQueueDefine.h"
 namespace queue
 {
     class WorkThread : public std::enable_shared_from_this<WorkThread>
@@ -24,8 +23,7 @@ namespace queue
         // 获取线程ID
         int32_t threadId() const 
         {
-            static std::atomic<int32_t> sId { 1 << 16 };
-            return sId.fetch_add(1, std::memory_order_relaxed);
+            return mId;
         }
 
         inline void setExclusive(bool isExclusive)
@@ -76,18 +74,25 @@ namespace queue
         bool _parallel();
 
     private:
+        // 线程ID
+        int32_t mId { 0 };
+
         bool mIsExclusive {false};       //是否为独占线程
         bool mPriorityChanged{ false };
         WorkThreadPriority mPriority {WorkThreadPriority::WTP_Normal};
 
-        std::atomic<bool> mIsCancelled {false};       //是否取消
-
         bool mNameChanged{ false };
         std::string mName;
+
+        //是否取消
+        std::atomic<bool> mIsCancelled {false};      
         
-        WorkQueue mOps;                 //线程任务队列
+        //线程任务队列
+        WorkQueue mOps;                              
         std::thread mThread;
-        std::weak_ptr<IThreadPool>   mThreadPool;    //归属线程池, 弱引用
+
+        //归属线程池, 弱引用
+        std::weak_ptr<IThreadPool>   mThreadPool;    
 
         // 独占线程通知
         Semaphore mSemaphore;

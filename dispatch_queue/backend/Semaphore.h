@@ -16,6 +16,7 @@ namespace queue
     public:
         // 初始信号量数量
         explicit Semaphore(int count = 0);
+        
         ~Semaphore() = default;
 
         // 尝试获取信号量, 成功返回true, 失败返回false

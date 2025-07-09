@@ -1,26 +1,31 @@
 #include "WorkThread.h"
-#include <atomic>
 #include <chrono>
 #include <cstdio>
-#include <memory>
-#include <thread>
 namespace queue
 {
     // 自旋尝试获取信号量的次数
     static constexpr auto sMaxSpinCount = 10;
+
     // 线程调度，最大等待时间2分钟还没有任务，可以自动退出 [独占线程除外]
     static constexpr auto sMaxSleepTimeout = std::chrono::seconds(120);
+
+    static int32_t sId() 
+    {
+        static std::atomic<int32_t> sId { 1 << 16 };
+        return sId.fetch_add(1, std::memory_order_relaxed);
+    }
 
     WorkThread::WorkThread(const std::weak_ptr<IThreadPool>& threadPool)
     : mThreadPool(threadPool)
     , mThread(&WorkThread::run, this)
     {
-        printf("WorkThread::WorkThread, threadId: %d\n", std::this_thread::get_id());
+        mId = sId();
+        printf("WorkThread::WorkThread, threadId: %d\n", threadId());
     }
     
     WorkThread::~WorkThread()
     {
-        printf("WorkThread::~WorkThread, threadId: %d\n", std::this_thread::get_id());
+        printf("WorkThread::~WorkThread, threadId: %d\n", threadId());
         if(mThread.joinable())
         {
             mThread.join();
@@ -100,31 +105,20 @@ namespace queue
 
     bool WorkThread::_exclusive()
     {
-        TaskOperatorPtr op;
+        // 等待信号量 或 超时
+        bool flag = mSemaphore.waitAcquire(sMaxSleepTimeout);
 
-        // 第一次尝试获取信号量【无锁】
-        bool flag = mSemaphore.tryAcquire();
-        if(!flag)
+        // 超时结束 & 当前线程没有被attach，可以自己退出
+        if(!flag && !mIsExclusive)
         {
-            // 自旋尝试10次
-            flag = mSemaphore.spinAcquire(sMaxSpinCount);
-        }
-        if(!flag)
-        {
-            // 等待信号量 或 超时
-            flag = mSemaphore.waitAcquire(sMaxSleepTimeout);
-
-            // 超时结束 & 当前线程没有被attach，可以自己退出
-            if(!flag && !mIsExclusive)
-            {
-                return false;
-            }
+            return false;
         }
 
         // 执行任务
+        TaskOperatorPtr op;
         if(mOps.try_dequeue(op) && op)
         {
-            printf("WorkThread::_exclusive, threadId: %d\n", std::this_thread::get_id());
+            printf("WorkThread::_exclusive, threadId: %d\n", threadId());
             (*op)();
         }
 
@@ -133,7 +127,6 @@ namespace queue
 
     bool WorkThread::_parallel()
     {
-        TaskOperatorPtr op;
         auto& data = _getThreadPool()->getData();
 
          // 整个线程池数据，第一次尝试获取信号量【无锁】
@@ -146,19 +139,14 @@ namespace queue
          if(!flag)
          {
             // 等待信号量 或 超时
-            // 此时线程池空闲线程+1(所有线程同步看见 memory_order_seq_cst)
+            // 认为线程处于wait状态，线程池空闲线程+1(所有线程同步看见 memory_order_seq_cst)
             data->mIdleThreads.fetch_add(1, std::memory_order_seq_cst);
             flag = data->mSemaphore.waitAcquire(sMaxSleepTimeout);
-            if(flag)
+            // 等到信号量，线程池空闲线程-1 或者 超时了，线程池空闲线程-1
+            data->mIdleThreads.fetch_sub(1, std::memory_order_release);
+            if(!flag)
             {
-                // 等到信号量，线程池空闲线程-1
-                data->mIdleThreads.fetch_sub(1, std::memory_order_release);
-            }else 
-            {
-                // 超时了，线程池空闲线程-1
-                data->mIdleThreads.fetch_sub(1, std::memory_order_release);
-                
-                // 尝试再获取一次信号量
+                // 超时了，尝试再获取一次信号量
                 if(!data->mSemaphore.tryAcquire())
                 {
                     // 失败了，表示线程需要退出了
@@ -168,7 +156,8 @@ namespace queue
             }
          }
 
-        //  从高到低优先级 进行任务执行
+        // 从高到低优先级 进行任务执行
+        TaskOperatorPtr op;
         for(int i=0; i<(int)TaskQueuePriority::TQP_Count; ++i)
         {
             if(data->mTaskQueues[i].try_dequeue(op) && op)
@@ -179,7 +168,7 @@ namespace queue
 
         if(op)
         {
-            printf("WorkThread::_parallel, threadId: %d\n", std::this_thread::get_id());
+            printf("WorkThread::_parallel, threadId: %d\n", threadId());
             (*op)();
         }
 
@@ -221,27 +210,27 @@ namespace queue
             LOGE("[HY]failed to set nice(%d), pri", ret);
         }
     #else
-            int                max  = sched_get_priority_max(SCHED_FIFO);
-            int                min  = sched_get_priority_min(SCHED_FIFO);
-            int                half = min + (max - min) / 2;
-            struct sched_param sp;
-            switch (mPriority)
-            {
-                case queue::WorkThreadPriority::WTP_Low:
-                    sp.sched_priority = min;
-                    break;
-                case queue::WorkThreadPriority::WTP_High:
-                    sp.sched_priority = max;
-                    break;
-                default:
-                    sp.sched_priority = half;
-                    break;
-            }
-            int error = pthread_setschedparam(mThread.native_handle(), SCHED_FIFO, &sp);
-            if (error != 0)
-            {
-                // LOGE("[HY]failed to set thread priority error: %d", error);
-            }
+        int                max  = sched_get_priority_max(SCHED_FIFO);
+        int                min  = sched_get_priority_min(SCHED_FIFO);
+        int                half = min + (max - min) / 2;
+        struct sched_param sp;
+        switch (mPriority)
+        {
+            case queue::WorkThreadPriority::WTP_Low:
+                sp.sched_priority = min;
+                break;
+            case queue::WorkThreadPriority::WTP_High:
+                sp.sched_priority = max;
+                break;
+            default:
+                sp.sched_priority = half;
+                break;
+        }
+        int error = pthread_setschedparam(mThread.native_handle(), SCHED_FIFO, &sp);
+        if (error != 0)
+        {
+            // LOGE("[HY]failed to set thread priority error: %d", error);
+        }
     #endif
     }
 

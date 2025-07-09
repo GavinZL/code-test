@@ -39,13 +39,13 @@ enum class WorkThreadPriority : std::uint8_t
 };
 
 class TaskQueue;
-class IQueueImpl;
 class TaskGroup;
+class IQueueImpl;
 }
 
 // alias
 using TaskQueuePtr = std::shared_ptr<queue::TaskQueue>;
+using TaskGroupPtr = std::shared_ptr<queue::TaskGroup>;
 using TaskQueueImplPtr = std::shared_ptr<queue::IQueueImpl>;
 using TaskOperatorPtr = std::shared_ptr<queue::TaskOperator>;
-using TaskGroupPtr = std::shared_ptr<queue::TaskGroup>;
 #endif

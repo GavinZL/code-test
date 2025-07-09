@@ -9,10 +9,10 @@ namespace queue
 {
     // 无任务owner
     static constexpr LWBarrier::Waiter* kNoOwner{ nullptr };
+
     // 已完成owner
     static char kInvalidAddressUsedForCompleted = 0;
-    static LWBarrier::Waiter* const kCompleted{
-        reinterpret_cast<LWBarrier::Waiter*>(&kInvalidAddressUsedForCompleted)};
+    static LWBarrier::Waiter* const kCompleted { reinterpret_cast<LWBarrier::Waiter*>(&kInvalidAddressUsedForCompleted) };
 
     // mutex + condition_variable封装
     class LWBarrier::Waiter
@@ -21,18 +21,24 @@ namespace queue
             // 等待任务完成
             bool wait(std::chrono::milliseconds timeout = std::chrono::milliseconds(-1))
             {
-                auto predicate = [this]{return mCompleted;};
+                auto predicate = [this]{ return mCompleted; };
+
                 std::unique_lock<std::mutex> loc(mLock);
                 if(!predicate())
                 {
+                    // 超时等待
                     if(timeout != std::chrono::milliseconds(-1))
                     {
                         return mCond.wait_for(loc, timeout, predicate);
                     }
+
+                    // 无限等待
                     mCond.wait(loc, predicate);
                 }
+
                 return true;
             }
+
             // 任务完成通知
             void notify()
             {
@@ -40,6 +46,7 @@ namespace queue
                 mCompleted = true;
                 mCond.notify_all();
             }
+            
             // 任务是否已完成
             inline bool isCompleted() const
             {

@@ -8,10 +8,16 @@ namespace queue
     {
     public:
         using CallBack = std::function<void(const std::shared_ptr<TaskOperator>&)>;
+        
     public:
         TaskOperator() = default;
-        explicit TaskOperator(CallBack callback) : mCallBack(std::move(callback)) {}
+
+        explicit TaskOperator(CallBack callback) 
+        : mCallBack(std::move(callback)) 
+        {}
+
         virtual ~TaskOperator() = default;
+
         virtual void operator()()
         {
             if(mCallBack)

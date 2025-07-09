@@ -17,7 +17,7 @@ namespace queue
         printf("ParallelThreadPool()\n");
         // 线程池最大线程数为cpu核数
         mData = std::make_shared<Data>();
-        mData->mMaxThreads.store(SysUtils::cpuCount(), std::memory_order_release);
+        mData->mMaxThreads.store(2 * SysUtils::cpuCount(), std::memory_order_release);
     }
 
     ParallelThreadPool::~ParallelThreadPool()
@@ -77,6 +77,8 @@ namespace queue
             // 创建新线程，注册到线程池
             auto thread = std::make_shared<WorkThread>(shared_from_this());
             registerWorkThread(thread);
+
+            mData->mActiveThreads.fetch_add(1, std::memory_order_release);
         }
         // 如果达到最大线程数量，就只有等待被调度了
         // ...

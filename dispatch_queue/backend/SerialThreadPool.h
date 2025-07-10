@@ -9,10 +9,10 @@
 #include "3rdparty/ThreadRWLock.hpp"
 namespace queue 
 {
-    class ExclusiveThreadPool : public IThreadPool
+    class SerialThreadPool : public IThreadPool
     {
     public:
-        explicit ExclusiveThreadPool()
+        explicit SerialThreadPool()
         :mExclusiveThreadsLock(task::ThreadRWLock::create()){}
         virtual void registerWorkThread(const std::shared_ptr<WorkThread>& thread) override;
         virtual void unregisterWorkThread(const std::shared_ptr<WorkThread>& thread) override;

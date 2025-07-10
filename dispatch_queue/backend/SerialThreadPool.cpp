@@ -1,24 +1,24 @@
-#include "ExclusiveThreadPool.h"
+#include "SerialThreadPool.h"
 #include "WorkThread.h"
 #include "SysUtils.h"
 #include <cstdio>
 namespace queue 
 {
-    void ExclusiveThreadPool::registerWorkThread(const std::shared_ptr<WorkThread>& thread)
+    void SerialThreadPool::registerWorkThread(const std::shared_ptr<WorkThread>& thread)
     {
         task::WriteLock lock(mExclusiveThreadsLock);
         mExclusiveThreads[thread->threadId()] = thread;
     }
 
-    void ExclusiveThreadPool::unregisterWorkThread(const std::shared_ptr<WorkThread>& thread)
+    void SerialThreadPool::unregisterWorkThread(const std::shared_ptr<WorkThread>& thread)
     {
         task::WriteLock lock(mExclusiveThreadsLock);
         mExclusiveThreads.erase(thread->threadId());
     }
 
-    int32_t ExclusiveThreadPool::attachOneThread(const std::string& name, WorkThreadPriority prio)
+    int32_t SerialThreadPool::attachOneThread(const std::string& name, WorkThreadPriority prio)
     {
-        printf("ExclusiveThreadPool::attachOneThread, name: %s, prio: %d\n", name.c_str(), prio);
+        printf("SerialThreadPool::attachOneThread, name: %s, prio: %d\n", name.c_str(), prio);
         int32_t index = -1;
         {
             task::ReadLock lock(mExclusiveThreadsLock);
@@ -57,9 +57,9 @@ namespace queue
         return index;
     }
 
-    void ExclusiveThreadPool::detachOneThread(int32_t threadID)
+    void SerialThreadPool::detachOneThread(int32_t threadID)
     {
-        printf("ExclusiveThreadPool::detachOneThread, threadID: %d\n", threadID);
+        printf("SerialThreadPool::detachOneThread, threadID: %d\n", threadID);
         task::WriteLock lock(mExclusiveThreadsLock);
         auto it = mExclusiveThreads.find(threadID);
         if(it != mExclusiveThreads.end())
@@ -68,9 +68,9 @@ namespace queue
         }
     }
 
-    void ExclusiveThreadPool::execute(const TaskOperatorPtr& task, int32_t threadId)
+    void SerialThreadPool::execute(const TaskOperatorPtr& task, int32_t threadId)
     {
-        printf("ExclusiveThreadPool::execute, threadId: %d\n", threadId);
+        printf("SerialThreadPool::execute, threadId: %d\n", threadId);
         task::ReadLock lock(mExclusiveThreadsLock);
         auto it = mExclusiveThreads.find(threadId);
         if(it != mExclusiveThreads.end())

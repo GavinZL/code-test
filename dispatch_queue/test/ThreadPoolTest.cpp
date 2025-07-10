@@ -8,7 +8,7 @@
 // #include <future>
 // #include <vector>
 // #include "backend/ParallelThreadPool.h"
-// #include "backend/ExclusiveThreadPool.h"
+// #include "backend/SerialThreadPool.h"
 
 // using namespace std;
 // using namespace testing;
@@ -46,8 +46,8 @@
 // }
 
 // // 测试独占线程池
-// TEST_F(ThreadPoolTest, ExclusiveThreadPool) {
-//     ExclusiveThreadPool pool;
+// TEST_F(ThreadPoolTest, SerialThreadPool) {
+//     SerialThreadPool pool;
 //     pool.start();
 
 //     std::atomic<int> counter{0};

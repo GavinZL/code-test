@@ -12,8 +12,8 @@ namespace queue
     {
     public:
     // 全局线程池
-        static const std::shared_ptr<IThreadPool>& exclusiveThreadPool();
-        static const std::shared_ptr<IThreadPool>& globalThreadPool();
+        static const std::shared_ptr<IThreadPool>& serialThreadPool();
+        static const std::shared_ptr<IThreadPool>& parallelThreadPool();
 
     public:
         virtual ~IThreadPool() = default;

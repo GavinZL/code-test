@@ -12,7 +12,7 @@ namespace queue
     {
     public:
     // 全局线程池
-        static const std::shared_ptr<IThreadPool>& exculsiveThreadPool();
+        static const std::shared_ptr<IThreadPool>& exclusiveThreadPool();
         static const std::shared_ptr<IThreadPool>& globalThreadPool();
 
     public:

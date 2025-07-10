@@ -78,6 +78,7 @@ namespace queue
         {
         }
         ~ConsumableOperator() = default;
+        
         virtual void operator()() override
         {
             if(mRealTask)

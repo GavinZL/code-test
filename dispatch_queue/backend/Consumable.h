@@ -48,7 +48,7 @@ namespace queue
                     }
                 }
 
-                // 当前没有资源，等待
+                // 当前没有资源等待
                 if(mResources.load() == 0)
                 {
                     return true;

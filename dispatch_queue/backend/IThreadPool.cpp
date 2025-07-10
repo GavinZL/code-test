@@ -4,7 +4,7 @@
 #include <memory>
 namespace queue 
 {
-    const std::shared_ptr<IThreadPool>& IThreadPool::exculsiveThreadPool()
+    const std::shared_ptr<IThreadPool>& IThreadPool::exclusiveThreadPool()
     {
         static std::shared_ptr<IThreadPool> sExclusiveThreadPool = 
             std::static_pointer_cast<IThreadPool>(std::make_shared<ExclusiveThreadPool>());

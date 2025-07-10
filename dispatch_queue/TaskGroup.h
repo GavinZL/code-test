@@ -12,6 +12,7 @@
 #include "TaskQueueDefine.h"
 namespace queue 
 {
+    class GroupImpl;
     class TaskGroup
     {
         public:
@@ -58,7 +59,7 @@ namespace queue
             bool wait(std::chrono::milliseconds t = std::chrono::milliseconds(-1));
 
         private:
-            std::shared_ptr<class GroupImpl> mGroupImpl;
+            std::shared_ptr<GroupImpl> mGroupImpl;
     } ;
 
 }

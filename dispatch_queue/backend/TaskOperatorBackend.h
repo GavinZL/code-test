@@ -9,7 +9,7 @@
 #include "TaskQueueDefine.h"
 #include "LWBarrier.h"
 #include "Consumable.h"
-namespace queue
+namespace task
 {
     // 处理同步任务
     class TaskBarrierOperator : public TaskOperator

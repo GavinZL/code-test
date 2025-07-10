@@ -6,7 +6,7 @@
 
 #include <atomic>
 #include "LWBarrier.h"
-namespace queue 
+namespace task 
 {
     class Consumable;
     using ConsumablePtr = std::shared_ptr<Consumable>;

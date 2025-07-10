@@ -6,7 +6,7 @@
 #include <string>
 #include "TaskQueueDefine.h"
 #include "TaskOperator.h"
-namespace queue
+namespace task
 {
     // 任务队列
     class TaskQueue final

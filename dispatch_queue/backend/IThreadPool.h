@@ -5,7 +5,7 @@
 #include "TaskQueueDefine.h"
 #include "Semaphore.h"
 #include "QueueDefine.h"
-namespace queue 
+namespace task 
 {
     class WorkThread;
     class IThreadPool : public std::enable_shared_from_this<IThreadPool>

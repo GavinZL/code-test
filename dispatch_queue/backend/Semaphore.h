@@ -9,7 +9,7 @@
 #include <condition_variable>
 
 // 信号量
-namespace queue
+namespace task
 {
     class Semaphore final
     {

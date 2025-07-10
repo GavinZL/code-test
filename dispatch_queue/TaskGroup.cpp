@@ -3,7 +3,7 @@
 #include "backend/GroupImpl.h"
 #include "TaskQueueFactory.h"
 #include "TaskQueue.h"
-namespace queue 
+namespace task 
 {
     void TaskGroup::asyncQueue(const TaskOperatorPtr& task, const TaskQueuePtr& queue)
     {

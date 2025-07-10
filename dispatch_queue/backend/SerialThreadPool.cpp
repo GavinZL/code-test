@@ -2,7 +2,7 @@
 #include "WorkThread.h"
 #include "SysUtils.h"
 #include <cstdio>
-namespace queue 
+namespace task 
 {
     void SerialThreadPool::registerWorkThread(const std::shared_ptr<WorkThread>& thread)
     {

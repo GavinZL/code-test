@@ -2,7 +2,7 @@
 #define __TASK_OPERATOR_H__
 #include <memory>
 #include <functional>
-namespace queue 
+namespace task 
 {
     class TaskOperator : public std::enable_shared_from_this<TaskOperator>
     {

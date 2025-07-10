@@ -7,7 +7,7 @@
 
 #include "TaskOperator.h"
 
-namespace queue 
+namespace task 
 {
 
 // 队列类型
@@ -44,8 +44,8 @@ class IQueueImpl;
 }
 
 // alias
-using TaskQueuePtr = std::shared_ptr<queue::TaskQueue>;
-using TaskGroupPtr = std::shared_ptr<queue::TaskGroup>;
-using TaskQueueImplPtr = std::shared_ptr<queue::IQueueImpl>;
-using TaskOperatorPtr = std::shared_ptr<queue::TaskOperator>;
+using TaskQueuePtr = std::shared_ptr<task::TaskQueue>;
+using TaskGroupPtr = std::shared_ptr<task::TaskGroup>;
+using TaskQueueImplPtr = std::shared_ptr<task::IQueueImpl>;
+using TaskOperatorPtr = std::shared_ptr<task::TaskOperator>;
 #endif

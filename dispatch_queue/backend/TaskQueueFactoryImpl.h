@@ -3,7 +3,7 @@
 
 #include "TaskQueueDefine.h"
 #include "TaskQueue.h"
-namespace queue
+namespace task
 {
     
     class TaskQueueFactoryImpl

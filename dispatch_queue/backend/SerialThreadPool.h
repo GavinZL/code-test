@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include "TaskQueueDefine.h"
 #include "3rdparty/ThreadRWLock.hpp"
-namespace queue 
+namespace task 
 {
     class SerialThreadPool : public IThreadPool
     {

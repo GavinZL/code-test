@@ -11,7 +11,7 @@
 #include <unordered_map>
 
 #include "QueueDefine.h"
-namespace queue
+namespace task
 {
 class WorkThread;
 class ParallelThreadPool: public IThreadPool

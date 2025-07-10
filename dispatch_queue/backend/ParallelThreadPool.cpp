@@ -9,7 +9,7 @@
 #include <mutex>
 #include "SysUtils.h"
 
-namespace queue
+namespace task
 {
 
     ParallelThreadPool::ParallelThreadPool()

@@ -1,7 +1,7 @@
 #include "WorkThread.h"
 #include <chrono>
 #include <cstdio>
-namespace queue
+namespace task
 {
     // 自旋尝试获取信号量的次数
     static constexpr auto sMaxSpinCount = 10;
@@ -216,10 +216,10 @@ namespace queue
         struct sched_param sp;
         switch (mPriority)
         {
-            case queue::WorkThreadPriority::WTP_Low:
+            case task::WorkThreadPriority::WTP_Low:
                 sp.sched_priority = min;
                 break;
-            case queue::WorkThreadPriority::WTP_High:
+            case task::WorkThreadPriority::WTP_High:
                 sp.sched_priority = max;
                 break;
             default:

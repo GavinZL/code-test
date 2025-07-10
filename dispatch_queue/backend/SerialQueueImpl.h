@@ -3,7 +3,7 @@
 #define __SERIAL_TASK_QUEUE_IMPL_H__
 
 #include "IQueueImpl.h"
-namespace queue 
+namespace task 
 {
     class SerialQueueImpl : public IQueueImpl
     {

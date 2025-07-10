@@ -12,7 +12,7 @@
 #include "IThreadPool.h"
 #include "Semaphore.h"
 #include "TaskQueueDefine.h"
-namespace queue
+namespace task
 {
     class WorkThread : public std::enable_shared_from_this<WorkThread>
     {

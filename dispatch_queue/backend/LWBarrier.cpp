@@ -5,7 +5,7 @@
 #include <mutex>
 #include <condition_variable>
 
-namespace queue
+namespace task
 {
     // 无任务owner
     static constexpr LWBarrier::Waiter* kNoOwner{ nullptr };

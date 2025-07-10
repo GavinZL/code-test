@@ -6,7 +6,7 @@
 #include <cstdint>
 #include "3rdparty/concurrentqueue.h"
 
-namespace queue 
+namespace task 
 {
 
     class TaskOperator;
@@ -15,7 +15,7 @@ namespace queue
 }
 
 // 无锁并发队列
-using WorkQueue = moodycamel::ConcurrentQueue<std::shared_ptr<queue::TaskOperator>>;
-using ThreadPoolPtr = std::shared_ptr<queue::IThreadPool>;
+using WorkQueue = moodycamel::ConcurrentQueue<std::shared_ptr<task::TaskOperator>>;
+using ThreadPoolPtr = std::shared_ptr<task::IThreadPool>;
 
 #endif

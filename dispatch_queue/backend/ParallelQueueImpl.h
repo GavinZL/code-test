@@ -2,7 +2,7 @@
 #define __PARALLEL_TASK_QUEUE_IMPL_H__
 
 #include "IQueueImpl.h"
-namespace queue 
+namespace task 
 {
     class ParallelQueueImpl : public IQueueImpl
     {

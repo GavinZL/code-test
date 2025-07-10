@@ -2,7 +2,7 @@
 #include "TaskOperator.h"
 #include "backend/IQueueImpl.h"
 
-namespace queue
+namespace task
 {
     TaskQueue::TaskQueue(const std::string& label, const TaskQueueImplPtr& impl)
     : mLabel(label)

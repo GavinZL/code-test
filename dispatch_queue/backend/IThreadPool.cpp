@@ -2,7 +2,7 @@
 #include "SerialThreadPool.h"
 #include "ParallelThreadPool.h"
 #include <memory>
-namespace queue 
+namespace task 
 {
     const std::shared_ptr<IThreadPool>& IThreadPool::serialThreadPool()
     {

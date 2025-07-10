@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <stdio.h>
 #include <thread>
-using namespace queue;
+using namespace task;
 // clang++ -o test TestTaskGroup.cpp -L../build/lib -ldispatch_queue -Wl,-rpath,@loader_path/../build/lib -g -O0
 
 int main(int argc, char* argv[])

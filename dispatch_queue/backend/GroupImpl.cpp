@@ -7,7 +7,7 @@
 #include <cassert>
 #include <memory>
 
-namespace queue 
+namespace task 
 {
     GroupImpl::~GroupImpl()
     {

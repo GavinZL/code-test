@@ -3,7 +3,7 @@
 #include "backend/TaskQueueFactoryImpl.h"
 #include <memory>
 #include <mutex>
-namespace queue 
+namespace task 
 {
     const std::shared_ptr<TaskQueueFactoryImpl>& TaskQueueFactory::_getFactoryImpl()
     {

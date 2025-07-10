@@ -6,7 +6,7 @@
 #include "IThreadPool.h"
 #include <chrono>
 #include "QueueDefine.h"
-namespace queue 
+namespace task 
 {
 class IThreadPool;
 class IQueueImpl

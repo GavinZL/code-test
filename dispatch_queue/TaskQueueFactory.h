@@ -8,7 +8,7 @@
 #include <memory>
 #include <string>
 
-namespace queue 
+namespace task 
 {
     // 队列工厂
     class TaskQueueFactoryImpl;

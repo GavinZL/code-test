@@ -10,7 +10,7 @@
 #include <type_traits>
 #include "TaskOperator.h"
 #include "TaskQueueDefine.h"
-namespace queue 
+namespace task 
 {
     class GroupImpl;
     class TaskGroup

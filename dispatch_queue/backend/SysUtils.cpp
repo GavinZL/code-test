@@ -2,7 +2,7 @@
 #include "SysUtils.h"
 
 #include <thread>
-namespace queue
+namespace task
 {
 
 void SysUtils::cpuYield()

@@ -5,7 +5,7 @@
 #include "QueueDefine.h"
 #include "Consumable.h"
 #include <memory>
-namespace queue 
+namespace task 
 {
     class GroupImpl : public std::enable_shared_from_this<GroupImpl>
     {

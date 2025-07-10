@@ -2,7 +2,7 @@
 #include <atomic>
 #include "SysUtils.h"
 
-namespace queue
+namespace task
 {
     Semaphore::Semaphore(int count)
     :mCount(count)

@@ -2,7 +2,7 @@
 #include "TaskOperatorBackend.h"
 #include <cassert>
 #include <cstdio>
-namespace queue 
+namespace task 
 {
 
     ParallelQueueImpl::ParallelQueueImpl(TaskQueuePriority prio, const ThreadPoolPtr& threadPool)

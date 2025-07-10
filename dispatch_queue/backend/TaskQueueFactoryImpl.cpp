@@ -10,7 +10,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <memory>
-namespace queue
+namespace task
 {
     // 全局初始化并行队列
     static std::array<TaskQueuePtr, uint32_t(TaskQueuePriority::TQP_Count)> sParallelQueues = 

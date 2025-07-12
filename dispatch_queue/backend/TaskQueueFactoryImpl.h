@@ -5,7 +5,6 @@
 #include "TaskQueue.h"
 namespace task
 {
-    
     class TaskQueueFactoryImpl
     {
     public:

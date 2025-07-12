@@ -58,6 +58,11 @@ namespace task
             return mName;
         }
 
+        inline bool isRunning() const
+        {
+            return mIsRunning;
+        }
+
         void run();
         void cancel();
 
@@ -77,6 +82,7 @@ namespace task
         // 线程ID
         int32_t mId { 0 };
 
+        bool mIsRunning {false};         //标记是否正在run， 可以统计是否当前线程卡在了一个操作上
         bool mIsExclusive {false};       //是否为独占线程
         bool mPriorityChanged{ false };
         WorkThreadPriority mPriority {WorkThreadPriority::WTP_Normal};

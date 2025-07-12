@@ -118,8 +118,10 @@ namespace task
         TaskOperatorPtr op;
         if(mOps.try_dequeue(op) && op)
         {
+            mIsRunning = true;
             printf("WorkThread::_exclusive, threadId: %d\n", threadId());
             (*op)();
+            mIsRunning = false;
         }
 
         return true;
@@ -168,8 +170,10 @@ namespace task
 
         if(op)
         {
+            mIsRunning = true;
             printf("WorkThread::_parallel, threadId: %d\n", threadId());
             (*op)();
+            mIsRunning = false;
         }
 
         return true;
